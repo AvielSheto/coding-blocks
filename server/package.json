@@ -1,0 +1,24 @@
+{
+  "name": "code-block-server",
+  "version": "1.0.0",
+  "description": "Code block server.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Aviel Sheto",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.2.0",
+    "http": "0.0.1-security",
+    "mongoose": "^6.8.4",
+    "socket.io": "^4.5.4"
+  },
+  "engines": {
+    "node": "v12.18.3"
+  }
+}
