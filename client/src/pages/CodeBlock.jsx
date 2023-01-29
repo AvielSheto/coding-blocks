@@ -12,12 +12,12 @@ function CodeBlock() {
     const [code, setCode] = useState();
     const [editorSocket, setEditorSocket] = useState();
     const [mentor, setMentor] = useState(false);
-    const [solution, setSolution] = useState()
-    const [showSmile, setShowSmile] = useState(false)
+    const [solution, setSolution] = useState();
+    const [showSmile, setShowSmile] = useState(false);
 
     useEffect(() => {
-        // const socket = io("http://localhost:3001");
-        const socket = io("https://code-block-server-production.up.railway.app/");
+        const socket = io("http://localhost:3001");
+        // const socket = io("https://code-block-server-production.up.railway.app/");
         setEditorSocket(socket);
 
         socket.on("connect", () => console.log("Hello user ID : " + socket.id));
@@ -52,6 +52,12 @@ function CodeBlock() {
         }
     }, [roomName])
 
+    const handleChange = (editorValue) => {
+        setCode(editorValue);
+        editorSocket.emit("send-changes", editorValue);
+        editorSocket.emit("save-document", editorValue);
+        editorValue === solution ? setShowSmile(true) : setShowSmile(false)
+    }
 
     return (
         <>
@@ -60,8 +66,8 @@ function CodeBlock() {
 
                 {showSmile &&
                     <div style={{
-                        height: "200px",
-                        width: "200px",
+                        height: "100px",
+                        width: "100px",
                         position: "absolute",
                         top: "55vh",
                         zIndex: "2",
@@ -77,12 +83,7 @@ function CodeBlock() {
                     theme="monokai"
                     value={code}
                     enableLiveAutocompletion={true}
-                    onChange={(newData) => {
-                        setCode(newData);
-                        editorSocket.emit("send-changes", newData);
-                        editorSocket.emit("save-document", newData);
-                        newData === solution ? setShowSmile(true) : setShowSmile(false)
-                    }}
+                    onChange={(e) => handleChange(e)}
                     editorProps={{ $blockScrolling: true }}
                 />
             </div>
