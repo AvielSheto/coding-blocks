@@ -4,10 +4,9 @@ const socketIo = require("socket.io");
 const http = require("http");
 const dotenv = require('dotenv').config()
 require('./config/database');
-const Document = require('./models/DocumentModel')
+const { findOrCreateDocument } = require('./controllers/documentController')
 
 const PORT = process.env.PORT || 3001;
-const defaultValue = ""
 let userCount = 0
 
 const app = express();
@@ -16,13 +15,9 @@ const server = http.createServer(app);
 
 const io = socketIo(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"]
   },
-});
-
-app.get("/", (req, res) => {
-  res.send("Wohoo.. Our server is live now");
 });
 
 io.on("connection", (socket) => {
@@ -42,7 +37,7 @@ io.on("connection", (socket) => {
 
     // Save code in DB
     socket.on("save-document", async code => {
-      await Document.findByIdAndUpdate(roomName, { code });
+      await findByIdAndUpdate(roomName, { code });
     });
 
     // Sent number of users
@@ -60,10 +55,3 @@ server.listen(PORT, (err) => {
   if (err) console.log(err);
   console.log("Server running on Port ", PORT);
 });
-
-async function findOrCreateDocument(id) {
-  if (id == null) return
-  const document = await Document.findById(id)
-  if (document) return document
-  return await Document.create({ _id: id, code: defaultValue })
-};
