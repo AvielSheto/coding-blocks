@@ -1,17 +1,15 @@
 const express = require("express");
-const cors = require('cors');
-const socketIo = require("socket.io");
-const http = require("http");
-const dotenv = require('dotenv').config()
-require('./config/database');
-const { findOrCreateDocument } = require('./controllers/documentController')
-
-const PORT = process.env.PORT || 3001;
-let userCount = 0
-
 const app = express();
+const server = require("http").createServer(app);
+const socketIo = require("socket.io");
+const dotenv = require('dotenv').config();
+const cors = require('cors');
+const { findOrCreateDocument } = require('./controllers/documentController');
+require('./config/database');
+
 app.use(cors());
-const server = http.createServer(app);
+const PORT = process.env.PORT || 3001;
+let userCount = 0;
 
 const io = socketIo(server, {
   cors: {
@@ -44,7 +42,7 @@ io.on("connection", (socket) => {
     socket.emit("users-counter", userCount);
   });
 
-  socket.on("disconnect", function () {
+  socket.on("disconnect", () => {
     userCount--;
     console.log("User disconnect, total user left", userCount);
   });
